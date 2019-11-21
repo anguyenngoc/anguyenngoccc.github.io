@@ -10,8 +10,9 @@ export class AppComponent {
   title = 'shopping-cart';
 
   public numberItems = 0;
-
+  public subToal = 0;
   public bill = 0;
+  public code;
 
   newItems(value) {
     this.numberItems = value;
@@ -19,4 +20,12 @@ export class AppComponent {
   getBill(value) {
     this.bill = value;
   }
+  getSubTotal(value) {
+    this.subToal = value;
+  }
+
+  getCode(value) {
+    this.code = value;
+  }
+
 }

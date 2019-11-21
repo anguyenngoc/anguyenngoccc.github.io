@@ -1,13 +1,15 @@
 <div class="promotion">
     <label for="promo-code">Have A Promo Code?</label>
-    <input type="text" id="promo-code" /> <button type="button"></button>
+    <h3>Nhập mã: ccc</h3>
+    <input type="text" id="promo-code" [(ngModel)]="code" name="code"/>
+    <button type="button" (click)="getCode()"></button>
 </div>
 
 <div class="summary">
     <ul>
-        <li>Subtotal <span>$21.97</span></li>
-        <li>Tax <span>$5.00</span></li>
-        <li class="total">Total <span>{{bill | currency}}</span></li>
+        <li>Subtotal <span>{{subBill | currency:'VND'}}</span></li>
+        <li>Tax <span>10 %</span></li>
+        <li class="total">Total <span>{{bill | currency:'VND'}}</span></li>
     </ul>
 </div>
 

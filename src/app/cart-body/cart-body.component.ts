@@ -1,19 +1,26 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, Input, OnChanges } from '@angular/core';
 import { LISTPRODUCT } from '../models/fake-data';
 import { ProductService } from '../product.service';
+
+export const PromoCode = [
+  { cd: 'ccc', sale: 100000 }
+];
 
 @Component({
   selector: 'app-cart-body',
   templateUrl: './cart-body.component.html',
   styleUrls: ['./cart-body.component.css']
 })
-export class CartBodyComponent implements OnInit {
+export class CartBodyComponent implements OnInit, OnChanges {
 
   @Output() newItemEvent = new EventEmitter<any>();
   @Output() totalBill = new EventEmitter<any>();
-
+  @Output() subTotal = new EventEmitter<any>();
+  @Input() proCode;
   public products = LISTPRODUCT;
-  public total = 0;
+  public item = true;
+  public promoCode = PromoCode;
+
   constructor(private productService: ProductService, private cdref: ChangeDetectorRef) { }
 
   ngOnInit() {
@@ -21,7 +28,12 @@ export class CartBodyComponent implements OnInit {
       this.totalProduct();
     }, 0);
   }
-  // tslint:disable-next-line:use-lifecycle-interface
+  ngOnChanges() {
+    if (this.proCode !== undefined) {
+      console.log(this.proCode);
+      this.promoCodeSale();
+    }
+  }
 
   removerProduct(id: number) {
     this.productService.deleteProduct(id);
@@ -44,17 +56,60 @@ export class CartBodyComponent implements OnInit {
     let total = 0;
     let sumItem = 0;
     let sumAllProduct = 0;
-    // let sumTax = 0;
+    let sumTax = 0;
+    let sum = 0;
+    // let sumSale = 0;
+    const sumsaletax = 0;
     const tax = 10;
     this.products.map(item => {
       total += item.quantity;
       sumItem = item.quantity * item.price;
       sumAllProduct += sumItem;
-      // sumTax = sumAllProduct * tax / 100;
+      if (tax > 0) {
+        sumTax = sumAllProduct * tax / 100;
+        sum = sumAllProduct - sumTax;
+      }
     });
+    if (total === 0) {
+      this.item = false;
+    }
     this.newItemEvent.emit(total);
-    this.totalBill.emit(sumAllProduct);
+    this.subTotal.emit(sumAllProduct);
+    this.totalBill.emit(sumsaletax);
+    this.totalBill.emit(sum);
   }
+
+  promoCodeSale() {
+    let total = 0;
+    let sumItem = 0;
+    let sumAllProduct = 0;
+    let sumTax = 0;
+    let sum = 0;
+    // let sumSale = 0;
+    const tax = 10;
+    this.products.map(item => {
+      total += item.quantity;
+      sumItem = item.quantity * item.price;
+      sumAllProduct += sumItem;
+      if (tax > 0) {
+        sumTax = sumAllProduct * tax / 100;
+        sum = sumAllProduct - sumTax;
+      }
+    });
+
+    let sumSale = 0;
+    let sumsaletax = 0;
+    this.promoCode.forEach((cod) => {
+      if (this.proCode === cod.cd) {
+        sumSale = sumAllProduct - cod.sale;
+        sumsaletax = sumSale - sumTax;
+        this.totalBill.emit(sumsaletax);
+      } else {
+        this.totalBill.emit(sum);
+      }
+    });
+  }
+}
 
   // reset(id: number) {
   //    this.products.map(data => {
@@ -66,4 +121,3 @@ export class CartBodyComponent implements OnInit {
   // }
 
 
-}

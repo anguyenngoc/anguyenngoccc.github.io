@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-cart-footer',
@@ -7,9 +7,20 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CartFooterComponent implements OnInit {
   @Input() bill;
-  constructor() { }
+  @Input() subBill;
+  @Output() promoCode = new EventEmitter<any>();
+
+  public code;
+
+  constructor() {
+
+  }
 
   ngOnInit() {
   }
 
+  getCode() {
+    this.promoCode.emit(this.code);
+    confirm('xac nhan code');
+  }
 }

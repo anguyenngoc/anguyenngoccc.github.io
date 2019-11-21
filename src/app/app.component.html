@@ -4,13 +4,17 @@
     </header>
 
     <section class="container">
-        <app-cart-body (newItemEvent)="newItems($event);" 
+        <app-cart-body (newItemEvent)="newItems($event);"
         (totalBill)="getBill($event);"
+        (subTotal)="getSubTotal($event)"
+        [proCode]="code"
         >
         </app-cart-body>
     </section>
 
     <section class="container">
-        <app-cart-footer [bill]="bill" ></app-cart-footer>
+        <app-cart-footer [bill]="bill" [subBill]="subToal"
+        (promoCode)="getCode($event)"
+        ></app-cart-footer>
     </section>
 </main>
